@@ -208,6 +208,7 @@
     <Compile Include="QueryComposition\IsOf\IsofEdmModel.cs" />
     <Compile Include="QueryComposition\IsOf\IsofFunctionTests.cs" />
     <Compile Include="QueryComposition\IsOf\IsOfModels.cs" />
+    <Compile Include="QueryComposition\ODataQueryWithGeoFunctionsTests.cs" />
     <Compile Include="Routing\DynamicProperties\DynamicPropertiesController.cs" />
     <Compile Include="Routing\DynamicProperties\DynamicPropertiesModel.cs" />
     <Compile Include="Routing\DynamicProperties\DynamicPropertiesTest.cs" />

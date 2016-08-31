@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.OData.Edm;
+using Microsoft.Spatial;
 
 namespace System.Web.OData.Query.Expressions
 {
@@ -15,6 +16,7 @@ namespace System.Web.OData.Query.Expressions
     {
         private static string _defaultString = default(string);
         private static Enum _defaultEnum = default(Enum);
+        private static GeographyPoint _defaultGeographyPoint = default(GeographyPoint);
 
         // function names
         internal const string StartswithFunctionName = "startswith";
@@ -42,6 +44,7 @@ namespace System.Web.OData.Query.Expressions
         internal const string IsofFunctionName = "isof";
         internal const string DateFunctionName = "date";
         internal const string TimeFunctionName = "time";
+        internal const string GeoDistanceFunctionName = "geo.distance";
 
         // string functions
         public static readonly MethodInfo StartsWith;
@@ -68,6 +71,9 @@ namespace System.Web.OData.Query.Expressions
 
         // enum functions
         public static readonly MethodInfo HasFlag;
+
+        // geography functions
+        public static readonly MethodInfo GeoDistance;
 
         // Date properties
         public static readonly Dictionary<string, PropertyInfo> DateProperties = new[]
@@ -155,6 +161,8 @@ namespace System.Web.OData.Query.Expressions
             FloorOfDouble = MethodOf(_ => Math.Floor(default(double)));
 
             HasFlag = MethodOf(_ => _defaultEnum.HasFlag(default(Enum)));
+
+            GeoDistance = MethodOf(_=>_defaultGeographyPoint.Distance(default(GeographyPoint)));
         }
 
         private static MethodInfo MethodOf<TReturn>(Expression<Func<object, TReturn>> expression)

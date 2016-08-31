@@ -6,6 +6,7 @@ using System.Data.Linq;
 using System.Linq;
 using System.Xml.Linq;
 using Microsoft.OData.Edm;
+using Microsoft.Spatial;
 using Microsoft.TestCommon.Types;
 
 namespace System.Web.OData.Query.Expressions
@@ -74,6 +75,7 @@ namespace System.Web.OData.Query.Expressions
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
+        public GeographyPoint PointLocation { get; set; }
     }
 
     public class DataTypes

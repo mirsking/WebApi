@@ -1685,6 +1685,20 @@ namespace System.Web.OData.Query.Expressions
 
         #endregion
 
+        #region GeoGraphy Function
+
+        [Fact]
+        public void GeoDistance()
+        {
+            VerifyQueryDeserialization(
+                "geo.distance(SupplierAddress/PointLocation, geography'SRID=0;Point(142.1 64.1)') gt 0",
+                "$it => ($it.SupplierAddress.PointLocation.Distance(Microsoft.Spatial.GeographyPointImplementation) > Convert(0))",
+                "$it => ((IIF(((IIF(($it.SupplierAddress == null), null, $it.SupplierAddress.PointLocation) == null) OrElse (Microsoft.Spatial.GeographyPointImplementation == null)), null, $it.SupplierAddress.PointLocation.Distance(Microsoft.Spatial.GeographyPointImplementation)) > Convert(0)) == True)"
+                );
+        }
+
+        #endregion
+
         #region Casts
 
         [Fact]

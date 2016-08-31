@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.UriParser;
+using Microsoft.Spatial;
 
 namespace System.Web.OData.Query.Expressions
 {
@@ -537,7 +538,8 @@ namespace System.Web.OData.Query.Expressions
 
             if (constantNode.TypeReference != null &&
                 constantNode.TypeReference.IsNullable &&
-                (constantNode.TypeReference.IsDate() || constantNode.TypeReference.IsTimeOfDay()))
+                (constantNode.TypeReference.IsDate() || constantNode.TypeReference.IsTimeOfDay() ||
+                 constantNode.TypeReference.IsGeography()))
             {
                 constantType = Nullable.GetUnderlyingType(constantType) ?? constantType;
             }
@@ -778,6 +780,9 @@ namespace System.Web.OData.Query.Expressions
 
                 case ClrCanonicalFunctions.TimeFunctionName:
                     return BindTime(node);
+
+                case ClrCanonicalFunctions.GeoDistanceFunctionName:
+                    return BindGeoDistance(node);
 
                 default:
                     // Get Expression of custom binded method.
@@ -1414,6 +1419,28 @@ namespace System.Web.OData.Query.Expressions
 
             return null;
         }
+
+        private Expression BindGeoDistance(SingleValueFunctionCallNode node)
+        {
+            Contract.Assert("geo.distance" == node.Name);
+
+            Expression[] arguments = BindArguments(node.Parameters);
+            ValidateAllGeographyPointArguments(node.Name, arguments);
+
+            Contract.Assert(arguments.Length == 2 && arguments[0].Type == typeof(GeographyPoint) && arguments[1].Type == typeof(GeographyPoint));
+
+            return MakeFunctionCall(ClrCanonicalFunctions.GeoDistance, arguments);
+        }
+
+        private static void ValidateAllGeographyPointArguments(string functionName, Expression[] arguments)
+        {
+            if (arguments.Any(arg => arg.Type != typeof(GeographyPoint)))
+            {
+                throw new ODataException(Error.Format(SRResources.FunctionNotSupportedOnEnum, functionName));
+            }
+        }
+
+
 
         private ParameterExpression HandleLambdaParameters(IEnumerable<RangeVariable> rangeVariables)
         {
